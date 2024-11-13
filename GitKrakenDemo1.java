@@ -1,32 +1,49 @@
+import java.util.List;
+import java.util.ArrayList;
+import java.util.concurrent.Future;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ExecutionException;
+
 public class GitKrakenDemo1
 {
-    private Thread[] threads; // Array to store threads
-    private long[] results;   // Array to store results from each thread
-
-    public GitKrakenDemo1()
-    {
-        threads = new Thread[1000]; // Initialize the array to hold threads
-        results = new long[1000];   // Array to store the sum calculated by each thread
-
-        // Create 1000 threads and store them in the array
-        for (int i = 0; i < 1000; i++) {
-            final int index = i; // Needed to access the specific index in the lambda
-
-            threads[i] = new Thread(() -> {
-                long sum = 0;
-                for (int j = 1; j <= 1_000_000; j++) {
-                    sum += j; // Sum from 1 to 1,000,000
-                }
-                results[index] = sum; // Store the result in the results array
-                System.out.println("Thread " + Thread.currentThread().getId() + " calculated sum: " + sum);
-            });
-
-            threads[i].start(); // Start each thread
-        }
-    }
-
     public static void main(String[] args)
     {
-        GitKrakenDemo1 app = new GitKrakenDemo1();
+        int numThreads = 1000; // Number of threads
+        int totalSum = 0;      // Variable to store the final total sum
+
+        ExecutorService executorService = Executors.newFixedThreadPool(numThreads); // Create a thread pool
+        List<Future<Integer>> futures = new ArrayList<>();
+
+        // Create 1000 threads and assign each one a task to compute the sum of numbers from 1 to 1 million
+        for (int i = 0; i < numThreads; i++) {
+            Future<Integer> future = executorService.submit(new Callable<Integer>() {
+                @Override
+                public Integer call() {
+                    int sum = 0;
+                    // Sum numbers from 1 to 1,000,000
+                    for (int j = 1; j <= 1000000; j++) {
+                        sum += j;
+                    }
+                    return sum; // Return the sum for this thread
+                }
+            });
+            futures.add(future); // Store the Future for each thread
+        }
+
+        try {
+            // Wait for all threads to finish and calculate the total sum
+            for (Future<Integer> future : futures) {
+                totalSum += future.get(); // Get the result from each thread and add it to the total sum
+            }
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+
+        executorService.shutdown(); // Shut down the executor service
+
+        // Output the total sum of all thread results
+        System.out.println("Total Sum from all threads: " + totalSum);
     }
 }
