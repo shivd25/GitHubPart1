@@ -35,7 +35,8 @@ public class GitKrakenDemo1
         try {
             // Wait for all threads to finish and calculate the total sum
             for (Future<Integer> future : futures) {
-                totalSum += future.get(); // Get the result from each thread and add it to the total sum
+                totalSum += future.get(); // Wait for each thread to complete and get the result
+                // The get() method implicitly ensures the main thread "joins" each worker thread
             }
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
