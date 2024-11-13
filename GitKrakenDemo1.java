@@ -10,6 +10,8 @@ public class GitKrakenDemo1
 {
     public static void main(String[] args)
     {
+        long startTime = System.currentTimeMillis(); // Start time for timing the program
+
         int numThreads = 1000; // Number of threads
         int totalSum = 0;      // Variable to store the final total sum
 
@@ -36,7 +38,6 @@ public class GitKrakenDemo1
             // Wait for all threads to finish and calculate the total sum
             for (Future<Integer> future : futures) {
                 totalSum += future.get(); // Wait for each thread to complete and get the result
-                // The get() method ensures the main thread "joins" each worker thread
             }
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
@@ -44,7 +45,11 @@ public class GitKrakenDemo1
 
         executorService.shutdown(); // Shut down the executor service
 
-        // Fifth commit: Output the total sum of all thread results
+        // Print the total sum of all thread results
         System.out.println("Total Sum from all threads: " + totalSum);
+
+        long endTime = System.currentTimeMillis(); // End time for timing the program
+        long duration = endTime - startTime; // Calculate the duration of the program's execution
+        System.out.println("Program executed in: " + duration + " milliseconds"); // Print the execution time
     }
 }
