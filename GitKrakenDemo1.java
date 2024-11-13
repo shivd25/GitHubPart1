@@ -36,7 +36,7 @@ public class GitKrakenDemo1
             // Wait for all threads to finish and calculate the total sum
             for (Future<Integer> future : futures) {
                 totalSum += future.get(); // Wait for each thread to complete and get the result
-                // The get() method implicitly ensures the main thread "joins" each worker thread
+                // The get() method ensures the main thread "joins" each worker thread
             }
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
@@ -44,7 +44,7 @@ public class GitKrakenDemo1
 
         executorService.shutdown(); // Shut down the executor service
 
-        // Output the total sum of all thread results
+        // Fifth commit: Output the total sum of all thread results
         System.out.println("Total Sum from all threads: " + totalSum);
     }
 }
